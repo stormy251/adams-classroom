@@ -16,7 +16,8 @@
     "baseUrl": "src",
     "paths": {
       "lib": ["lib/*"],
-      "features": ["features/*"]
+      "features": ["features/*"],
+      "styles": ["styles/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
