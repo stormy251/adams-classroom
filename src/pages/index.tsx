@@ -1,8 +1,14 @@
 import type {NextPage} from 'next';
 import Head from 'next/head';
-import {Page} from '@geist-ui/react';
+import {Button, Page} from '@geist-ui/react';
+import {studentsFetcher} from 'lib/firebase/fetchers/students-fetchers';
 
 const Home: NextPage = () => {
+  const test = async () => {
+    const myStudents = await studentsFetcher();
+    console.log('myStudents:', myStudents);
+  };
+
   return (
     <Page>
       <Head>
@@ -19,6 +25,7 @@ const Home: NextPage = () => {
       <Page.Content>
         <h2>Hello, Everyone.</h2>
         <p>This is a simulated page, you can click anywhere to close it.</p>
+        <Button onClick={() => test()}>Test</Button>
       </Page.Content>
       <Page.Footer>
         <h2>Footer</h2>
