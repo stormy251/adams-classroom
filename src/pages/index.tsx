@@ -1,11 +1,11 @@
 import type {NextPage} from 'next';
 import Head from 'next/head';
-import {Button, Page, Text, Spacer} from '@geist-ui/react';
-import {studentsFetcher} from 'lib/firebase/fetchers/students-fetchers';
-import {jobsFetcher} from 'lib/firebase/fetchers/jobs-fetchers';
+import {Page, Text, Spacer} from '@geist-ui/react';
 import {useEffect, useState} from 'react';
-import {Student} from 'lib/firebase/models/student-models';
-import {Job} from 'lib/firebase/models/job-models';
+import {Student} from 'lib/supabase/models/student-models';
+import {Job} from 'lib/supabase/models/job-models';
+import {getJobs} from 'lib/supabase/fetchers/jobs-fetchers';
+import {getStudents} from 'lib/supabase/fetchers/students-fetchers';
 
 const Home: NextPage = () => {
   const [isLoadingInfo, setIsLoadingInfo] = useState(true);
@@ -13,9 +13,9 @@ const Home: NextPage = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
 
   const loadStudentsAndJobs = async () => {
-    const latestStudents = await studentsFetcher();
+    const latestStudents = await getStudents();
     setStudents(latestStudents);
-    const latestJobs = await jobsFetcher();
+    const latestJobs = await getJobs();
     setJobs(latestJobs);
     if (isLoadingInfo) {
       setIsLoadingInfo(false);
