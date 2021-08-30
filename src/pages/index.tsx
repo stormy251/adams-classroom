@@ -6,10 +6,9 @@ import {Student} from 'lib/supabase/models/student-models';
 import {Job} from 'lib/supabase/models/job-models';
 import {getJobs} from 'lib/supabase/fetchers/jobs-fetchers';
 import {getStudents} from 'lib/supabase/fetchers/students-fetchers';
-import {Week} from "../lib/supabase/models/week-model";
-import {createWeek} from "../lib/supabase/creators/week-creators";
-import {useRouter} from "next/router";
-
+import {Week} from 'lib/supabase/models/week-model';
+import {createWeek} from 'lib/supabase/creators/week-creators';
+import {useRouter} from 'next/router';
 
 const Home: NextPage = () => {
   const [isLoadingInfo, setIsLoadingInfo] = useState(true);
@@ -31,18 +30,21 @@ const Home: NextPage = () => {
     let currentlyAssignedStudents = 0;
     let week = {
       jobDetails: {}
-    } as Week
+    } as Week;
     const randomizedStudents = randomlySortStudents(students);
     jobs.forEach((job: Job) => {
       // provide a starting count from 0 to n || n to m
       // take the students from 0 to 10 or from the previous starting count in the loop to the number of roles in the job available
-      assignableStudents = randomizedStudents.slice(currentlyAssignedStudents, currentlyAssignedStudents + job.count);
+      assignableStudents = randomizedStudents.slice(
+        currentlyAssignedStudents,
+        currentlyAssignedStudents + job.count
+      );
       // amend the job object with an assignedStudents array
       week.jobDetails[job.id] = assignableStudents;
       // reset assignable students
       currentlyAssignedStudents += assignableStudents.length;
-    })
-    await createWeek(week)
+    });
+    await createWeek(week);
   };
   const randomlySortStudents = (students: Student[]) => {
     for (let i = students.length - 1; i > 0; i--) {
@@ -50,7 +52,7 @@ const Home: NextPage = () => {
       [students[i], students[j]] = [students[j], students[i]];
     }
     return students;
-  }
+  };
 
   useEffect(() => {
     loadStudentsAndJobs();

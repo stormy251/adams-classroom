@@ -1,7 +1,7 @@
-import {Student} from "./student-models";
+import {Student} from './student-models';
 export type Job = {
   id: string;
   name: string;
   count: number;
-  assignedStudents?: Student[]
+  assignedStudents?: Student[];
 };

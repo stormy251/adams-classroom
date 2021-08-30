@@ -1,16 +1,13 @@
 import React, {FC} from 'react';
-import {Job} from "../../../lib/supabase/models/job-models";
-import {Student} from "../../../lib/supabase/models/student-models";
+import {Job} from '../../../lib/supabase/models/job-models';
+import {Student} from '../../../lib/supabase/models/student-models';
 
 type JobCardProps = {
-    job: Job;
+  job: Job;
 };
 
 const JobCard: FC<JobCardProps> = ({job}) => {
-    return (
-        <>
-        </>
-    );
+  return <></>;
 };
 
 export default JobCard;
