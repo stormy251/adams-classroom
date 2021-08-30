@@ -1,17 +1,21 @@
 import type {NextPage} from 'next';
 import Head from 'next/head';
-import {Page, Text, Spacer} from '@geist-ui/react';
+import {Page, Button, Grid} from '@geist-ui/react';
 import {useEffect, useState} from 'react';
 import {Student} from 'lib/supabase/models/student-models';
 import {Job} from 'lib/supabase/models/job-models';
 import {getJobs} from 'lib/supabase/fetchers/jobs-fetchers';
 import {getStudents} from 'lib/supabase/fetchers/students-fetchers';
+import {Week} from "../lib/supabase/models/week-model";
+import {createWeek} from "../lib/supabase/creators/week-creators";
+import {useRouter} from "next/router";
+
 
 const Home: NextPage = () => {
   const [isLoadingInfo, setIsLoadingInfo] = useState(true);
   const [students, setStudents] = useState<Student[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
-
+  const router = useRouter();
   const loadStudentsAndJobs = async () => {
     const latestStudents = await getStudents();
     setStudents(latestStudents);
@@ -22,10 +26,35 @@ const Home: NextPage = () => {
     }
   };
 
+  const assignStudentsJobs = async () => {
+    let assignableStudents = [];
+    let currentlyAssignedStudents = 0;
+    let week = {
+      jobDetails: {}
+    } as Week
+    const randomizedStudents = randomlySortStudents(students);
+    jobs.forEach((job: Job) => {
+      // provide a starting count from 0 to n || n to m
+      // take the students from 0 to 10 or from the previous starting count in the loop to the number of roles in the job available
+      assignableStudents = randomizedStudents.slice(currentlyAssignedStudents, currentlyAssignedStudents + job.count);
+      // amend the job object with an assignedStudents array
+      week.jobDetails[job.id] = assignableStudents;
+      // reset assignable students
+      currentlyAssignedStudents += assignableStudents.length;
+    })
+    await createWeek(week)
+  };
+  const randomlySortStudents = (students: Student[]) => {
+    for (let i = students.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [students[i], students[j]] = [students[j], students[i]];
+    }
+    return students;
+  }
+
   useEffect(() => {
     loadStudentsAndJobs();
   }, []);
-
   return (
     <Page>
       <Head>
@@ -40,30 +69,10 @@ const Home: NextPage = () => {
         <h2>Student Jobs</h2>
       </Page.Header>
       <Page.Content>
-        <div style={{display: 'flex'}}>
-          <div>
-            <Text h3>Students</Text>
-            {!isLoadingInfo &&
-              students &&
-              students.map((student, index) => (
-                <Text key={`${student.name}-${index + 1}`}>
-                  {index + 1}. {student.name}
-                </Text>
-              ))}
-          </div>
-          <Spacer w={2} />
-          <div>
-            <Text h3>Jobs</Text>
-            {!isLoadingInfo &&
-              jobs &&
-              jobs.map((job, index) => (
-                <Text key={`${job.name}-${index + 1}`}>
-                  {index + 1}. {job.name}
-                </Text>
-              ))}
-          </div>
-        </div>
-        <p>This is a simulated page, you can click anywhere to close it.</p>
+        <Grid>
+          <Button onClick={() => assignStudentsJobs()}>Assign</Button>
+          <Button onClick={() => router.push('/weekExplorer')}>Week Explorer</Button>
+        </Grid>
       </Page.Content>
       <Page.Footer>
         <h2>Footer</h2>
