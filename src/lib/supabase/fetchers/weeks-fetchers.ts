@@ -8,11 +8,10 @@ export const getWeeks = async (): Promise<Week[]> => {
 };
 
 export const getWeek = async (id: string): Promise<Week | null> => {
-  let { data: week, error } = await Supabase
-      .from('weeks')
-      .select("*")
-      // Filters
-      .eq('id', id)
+  let {data: week, error} = await Supabase.from('weeks')
+    .select('*')
+    // Filters
+    .eq('id', id);
 
   return week?.[0] || null;
-}
+};
