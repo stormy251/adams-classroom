@@ -15,10 +15,10 @@ import {getWeeks} from 'lib/supabase/fetchers/weeks-fetchers';
 import {useRouter} from 'next/router';
 
 // Deleters
-import {deleteWeek} from "lib/supabase/deleters/week-deleters";
+import {deleteWeek} from 'lib/supabase/deleters/week-deleters';
 
 // Icons
-import {Trash2} from "@geist-ui/react-icons";
+import {Trash2} from '@geist-ui/react-icons';
 
 const WeekExplorer: NextPage = () => {
   const [isLoadingInfo, setIsLoadingInfo] = useState(true);
@@ -58,10 +58,21 @@ const WeekExplorer: NextPage = () => {
           {weeks &&
             weeks.map(({id, created_at}: Week) => (
               <li key={created_at}>
-                  <Grid.Container gap={2}>
-                      <Grid><a onClick={() => router.push(`/weeks/${id}`)}>{new Date(created_at).toString()}</a></Grid>
-                      <Grid><Button onClick={() => deleteWeek(id)} iconRight={<Trash2 />} auto scale={2/3} /></Grid>
-                  </Grid.Container>
+                <Grid.Container gap={2}>
+                  <Grid>
+                    <a onClick={() => router.push(`/weeks/${id}`)}>
+                      {new Date(created_at).toString()}
+                    </a>
+                  </Grid>
+                  <Grid>
+                    <Button
+                      onClick={() => deleteWeek(id)}
+                      iconRight={<Trash2 />}
+                      auto
+                      scale={2 / 3}
+                    />
+                  </Grid>
+                </Grid.Container>
               </li>
             ))}
         </ol>
