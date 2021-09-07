@@ -1,6 +1,6 @@
 import type {NextPage} from 'next';
 import Head from 'next/head';
-import {Page, Button, Grid} from '@geist-ui/react';
+import {Page, Button, Grid, Loading, Text} from '@geist-ui/react';
 import {useEffect, useState} from 'react';
 import {Student} from 'lib/supabase/models/student-models';
 import {Job} from 'lib/supabase/models/job-models';
@@ -26,6 +26,7 @@ const Home: NextPage = () => {
   };
 
   const assignStudentsJobs = async () => {
+    setIsLoadingInfo(true);
     let assignableStudents = [];
     let currentlyAssignedStudents = 0;
     let week = {
@@ -44,7 +45,12 @@ const Home: NextPage = () => {
       // reset assignable students
       currentlyAssignedStudents += assignableStudents.length;
     });
-    await createWeek(week);
+    try {
+      await createWeek(week);
+      setIsLoadingInfo(false);
+    } catch (e) {
+      console.error(e);
+    }
   };
   const randomlySortStudents = (students: Student[]) => {
     for (let i = students.length - 1; i > 0; i--) {
@@ -68,13 +74,28 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Page.Header>
-        <h2>Student Jobs</h2>
+        <h2>Dashboard</h2>
       </Page.Header>
       <Page.Content>
-        <Grid>
-          <Button onClick={() => assignStudentsJobs()}>Assign</Button>
-          <Button onClick={() => router.push('/weekExplorer')}>Week Explorer</Button>
-        </Grid>
+        <Text h3>Week Management</Text>
+        <Grid.Container gap={2}>
+          <Grid>
+            <Button disabled={isLoadingInfo} onClick={() => assignStudentsJobs()}>
+              <Text>Create New Week</Text>
+            </Button>
+          </Grid>
+          <Grid>
+            <Button onClick={() => router.push('/weekExplorer')}>Week Explorer</Button>
+          </Grid>
+        </Grid.Container>
+        <Text h3 pt={3}>
+          Student Management
+        </Text>
+        <Grid.Container gap={2}>
+          <Grid>
+            <Button disabled>Add New Student</Button>
+          </Grid>
+        </Grid.Container>
       </Page.Content>
       <Page.Footer>
         <h2>Footer</h2>
